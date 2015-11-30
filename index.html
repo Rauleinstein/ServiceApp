@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ServiceApp</title>
+
+		<!-- Bootstrap CSS -->
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+  		<!-- <link rel="stylesheet" href="chosen/chosen.css"> -->
+  		<style type="text/css" media="screen">
+  			.machine {
+			    display: inline-block;
+			    padding: 10px;
+			    width: 130px;
+			}
+  		</style>
+	</head>
+	<body>
+		<div class="container">
+
+		</div>
+
+		<!-- jQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<!-- Bootstrap JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script src="cookie.js"></script>
+		<script>
+		function createList (machines) {
+			$.each(machines, function(i, m) {
+				var machine = '<div class="machine" data-id="'+m.id+'"><p>'+m.name+'</p><button id="restart" type="button" class="btn btn-danger">Restart</button><button id="up" type="button" class="btn btn-success">UP</button><button id="down" type="button" class="btn btn-info">DOWN</button></div>';
+				$('.container').append(machine);
+			});
+		}
+		var machines = null;
+		function getMachines () {
+
+			Cookies.set('merchantSessionId','0d703a0c-5b8d-46dc-82b8-408830b390f1');
+			$.ajax({
+				url: 'https://api.bubblmee.com/merchant/pos',
+				type: 'GET',
+				async: false,
+				xhrFields: {
+				      withCredentials: true
+				}
+			})
+			.done(function(data) {
+				console.log(data);
+				machines = data;
+				createList(machines);
+				$('body').on('click', '#restart', function(event) {
+					var machineID = $(this).parent().attr('data-id');
+					console.log(machineID);
+					$.ajax({
+						url: 'https://api.bubblmee.com/merchant/pos/'+machineID+'/reset',
+						type: 'POST',
+						dataType: 'json',
+						data: {param1: 'value1'},
+						xhrFields: {
+						      withCredentials: true
+						}
+					});
+				});
+				$('body').on('click', '#up', function(event) {
+					var machineID = $(this).parent().attr('data-id');
+					console.log(machineID);
+					$.ajax({
+						url: 'https://api.bubblmee.com/merchant/pos/'+machineID+'/actuatorUp',
+						type: 'POST',
+						dataType: 'json',
+						data: {param1: 'value1'},
+						xhrFields: {
+						      withCredentials: true
+						}
+					});
+				});
+				$('body').on('click', '#down', function(event) {
+					var machineID = $(this).parent().attr('data-id');
+					console.log(machineID);
+					$.ajax({
+						url: 'https://api.bubblmee.com/merchant/pos/'+machineID+'/actuatorDown',
+						type: 'POST',
+						dataType: 'json',
+						data: {param1: 'value1'},
+						xhrFields: {
+						      withCredentials: true
+						}
+					});
+				});
+
+			})
+			.fail(function() {
+				console.log("error");
+			})
+			.always(function() {
+				console.log("complete");
+			});
+		}
+		getMachines();
+
+		
+
+
+		</script>
+	</body>
+</html>
+
+<!-- 
+
+{"flowSteps":[
+{"type":"HTML5","url":"https://media.bubblmee.com/flow/XXLSweden/","subPath":"4.html"},
+{"type":"HTML5","url":"https://media.bubblmee.com/flow/XXLSweden/","subPath":"1.html"},
+{"type":"HTML5","url":"https://media.bubblmee.com/flow/XXLSweden/","subPath":"2.html"},
+{"type":"HTML5","url":"https://media.bubblmee.com/flow/XXLSweden/","subPath":"3.html"}]}
